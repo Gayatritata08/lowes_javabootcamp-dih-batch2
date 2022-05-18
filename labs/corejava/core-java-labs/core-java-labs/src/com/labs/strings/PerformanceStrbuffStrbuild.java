@@ -1,3 +1,16 @@
+/*
+ * String Buffer is thread Safe,Synchronized.
+ * Performance will be less.
+ * 
+ * String Builder is not thread safe not synchronized
+ * Performance will be more.
+ * 
+ * Both are mutable
+ * all the methods are also same
+ * 
+ * 
+ */
+
 package com.labs.strings;
 
 public class PerformanceStrbuffStrbuild {
