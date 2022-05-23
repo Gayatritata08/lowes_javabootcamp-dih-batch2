@@ -20,7 +20,9 @@ package com.labs.arrays;
 public class ArraysDemo {
 
 	public static void main(String[] args) {
-		int[] a = new int[6];//Declaration Instantiation
+
+		// First approach
+		int[] a = new int[6];// Declaration Instantiation
 
 		a[0] = 0;
 		a[1] = 1;
@@ -32,7 +34,8 @@ public class ArraysDemo {
 		for (int i = 0; i < a.length; i++)
 			System.out.println("Numbers are...." + a[i]);
 
-		int[] b = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }; //Initialization
+		// 2 nd approach
+		int[] b = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }; // Initialization
 
 		System.out.println("for loop b array");
 
@@ -47,6 +50,15 @@ public class ArraysDemo {
 		for (int number : b) {
 
 			System.out.println(number);
+		}
+		
+		
+		System.out.println("C array numbers to dispaly...");
+		//3 rd approach
+		int[] c = new int[] { 1, 2, 3, 4, 5, 6 };
+
+		for (int cnumber : c) {
+			System.out.println(cnumber);
 		}
 
 	}

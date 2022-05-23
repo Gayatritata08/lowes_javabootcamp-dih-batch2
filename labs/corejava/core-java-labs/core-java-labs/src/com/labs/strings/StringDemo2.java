@@ -37,17 +37,15 @@ public class StringDemo2 {
 		String str8 = str7.substring(5, 15);
 		System.out.println(str8);
 		CharSequence chsequence = str7.subSequence(5, 15);
-		System.out.println("chsequence..."+chsequence);
-		
-		
-		//string split
-		
+		System.out.println("chsequence..." + chsequence);
+
+		// string split
+
 		String str9 = "gayatri.tata@gmail.com";
 		String[] splitValues = str9.split("\\@");
-		System.out.println("" +splitValues[1]);
-		
-		
-		
+
+		for (int i = 0; i < splitValues.length; i++)
+			System.out.println("" + splitValues[i]);
 
 	}
 

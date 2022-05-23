@@ -3,7 +3,7 @@ package com.labs.oops;
 class Parent {
 
 	public Parent(int i) {
-		System.out.println("Defult parent Constructor"+i);
+		System.out.println("Default parent Constructor"+i);
 	}
 
 }
@@ -11,7 +11,7 @@ class Parent {
 class Child extends Parent{
 	public Child(int i) {
 		super(100);
-		System.out.println("Defulat child Constructor" + i);
+		System.out.println("Default child Constructor" + i);
 	}
 }
 
