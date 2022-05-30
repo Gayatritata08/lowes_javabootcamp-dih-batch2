@@ -211,7 +211,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 					writer.write(empListObj.getCountry() + ",");
 					writer.write("\n");
 				}
-				System.out.println("Bulk Import is success with the records size " + employee.size() + "!!!");
+				System.out.println("Bulk export is success with the records size " + employee.size() + "!!!");
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {

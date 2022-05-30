@@ -211,17 +211,33 @@ public class EmployeeServiceDao implements EmployeeService {
 		String line;
 		BufferedReader reader = null;
 		try {
+			stmt = jdbcCon.createStatement();
+		} catch (SQLException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		String insertQueryForPrepareStmt = "INSERT INTO employee (name, age, designation, department, country) VALUES (?, ?, ?, ?, ?)";
+		try {
 			reader = new BufferedReader(new FileReader(filePath));
+			try {
+				System.out.println(reader.readLine());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		}
 		try {
 			while ((line = reader.readLine()) != null) {
+				System.out.println(line+"***********");
+				
 				String[] parts = line.split(",");
+				System.out.println(line+"***********" + parts.length);
 				if (parts.length >= 0) {
 					try {
-						stmt = jdbcCon.createStatement();
-						String insertQueryForPrepareStmt = "INSERT INTO employee (name, age, designation, department, country) VALUES (?, ?, ?, ?, ?)";
+//						stmt = jdbcCon.createStatement();
+//						String insertQueryForPrepareStmt = "INSERT INTO employee (name, age, designation, department, country) VALUES (?, ?, ?, ?, ?)";
 						pstmt = jdbcCon.prepareStatement(insertQueryForPrepareStmt);
 						pstmt.setString(1, parts[0]);
 						pstmt.setInt(2, Integer.parseInt(parts[1]));
@@ -250,8 +266,8 @@ public class EmployeeServiceDao implements EmployeeService {
 			}
 
 		}
-
 	}
+
 
 	@Override
 	public void bulkExport() {

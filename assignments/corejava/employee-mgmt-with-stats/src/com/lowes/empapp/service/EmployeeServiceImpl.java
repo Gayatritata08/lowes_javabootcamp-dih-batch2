@@ -11,9 +11,11 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.function.Function;
+import java.util.TreeMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import com.lowes.empapp.exception.EmployeeException;
 import com.lowes.empapp.model.Employee;
@@ -24,8 +26,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 	HashMap<Integer, Employee> employee = new HashMap<Integer, Employee>();
 
 	Employee empObj;
-	
-
 
 	@Override
 	public boolean create(Employee emp) {
@@ -139,22 +139,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 			System.out.println("Please enter the employee Name");
 			String name = sc.next();
 			emp.setName(name);
-			
-			boolean valStatus =true;
+
+			boolean valStatus = true;
 			do {
-			System.out.println("Please enter the Age");
-			int age = sc.nextInt();
-			emp.setAge(age);
-			valStatus = validate(emp, employee -> employee.getAge() >= 20 && employee.getAge() <= 60);
-			if (valStatus) {
-				System.out.println("employee age with in the range");
-			}
-			else 
-			{
-				System.out.println("Validation Error:Please enter the employee age between 20 to 60" );
-			}
-			}while(!valStatus);
-			
+				System.out.println("Please enter the Age");
+				int age = sc.nextInt();
+				emp.setAge(age);
+				valStatus = validate(emp, employee -> employee.getAge() >= 20 && employee.getAge() <= 60);
+				if (valStatus) {
+					System.out.println("employee age with in the range");
+				} else {
+					System.out.println("Validation Error:Please enter the employee age between 20 to 60");
+				}
+			} while (!valStatus);
 
 			System.out.println("Please enter the department");
 			String department = sc.next();
@@ -242,10 +239,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	}
 
-	public boolean validate(Employee emp,Predicate<Employee> validator) {
+	public boolean validate(Employee emp, Predicate<Employee> validator) {
 		return validator.test(emp);
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	Comparator EMPLOYEE_SORT_BY_NAME = new Comparator<Employee>() {
 		@Override
@@ -256,5 +253,74 @@ public class EmployeeServiceImpl implements EmployeeService {
 			return 0;
 		}
 	};
-	
+
+	public void printStatistics() {
+		List<Employee> empList = getAll();
+
+		long n = getEmployeeCountAgeGreaterThan(empObj -> empObj.getAge() > 10);
+		System.out.println("Employees Age greater than 50 count " + n);
+
+		List<Integer> ageGrtThanX = getEmployeesIdsAgeGreaterThan(10);
+		System.out.println("getEmployeesIdsAgeGreaterThan () :: " +ageGrtThanX);
+		
+		Map<String, Long> empCountMap =  getEmployeeCountByBeparment();
+		System.out.println("getEmployeeCountByBeparment" +empCountMap);
+		
+		List<String> deptList = getDepartmentsHaveEmployeeMorethan(3);
+		System.out.println("getDepartmentsHaveEmployeeMorethan :: \n"+deptList);
+		
+		List<String> namesList = getEmployeeNameStartsWith("M");
+		System.out.println("getEmployeeNameStartsWith" +namesList );
+	}
+
+	@Override
+	public long getEmployeeCountAgeGreaterThan(Predicate<Employee> condition) {
+
+		return employee.values().stream().filter(condition).count();
+
+	}
+
+	@Override
+	public List<Integer> getEmployeesIdsAgeGreaterThan(int age) {
+
+		return employee.values().stream().filter(empObj -> empObj.getAge() > age).map(empObj -> empObj.getEmpId())
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Map<String, Long> getEmployeeCountByBeparment() {
+
+		return employee.values().stream()
+				.collect(Collectors.groupingBy(Employee::getDepartment, Collectors.counting()));
+	}
+
+	@Override
+	public Map<String, Long> getEmployeeCountByDepartmentOrder() {
+
+		return employee.values().stream()
+				.collect(Collectors.groupingBy(Employee::getDepartment, TreeMap::new, Collectors.counting()));
+	}
+
+	@Override
+	public List<String> getDepartmentsHaveEmployeeMorethan(int criteria) {
+		
+		 return employee.values()
+	                .stream()
+	                .collect(Collectors.groupingBy(Employee::getDepartment, Collectors.counting()))
+	                .entrySet()
+	                .stream()
+	                .filter(entry -> entry.getValue() > criteria)
+	                .map(Map.Entry::getKey)
+	                .collect(Collectors.toList());
+	}
+
+	@Override
+	public List<String> getEmployeeNameStartsWith(String s) {
+		 return employee.values()
+	                .stream()
+	                .map(Employee::getName)
+	                .filter(name -> name.startsWith(s))
+	                .collect(Collectors.toList());
+	}
+
 }
