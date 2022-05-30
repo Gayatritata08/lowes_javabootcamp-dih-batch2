@@ -1,4 +1,4 @@
-package com.lowes.empapp;
+package com.lowes.empapp.exception;
 
 public class EmployeeException extends Exception {
 	

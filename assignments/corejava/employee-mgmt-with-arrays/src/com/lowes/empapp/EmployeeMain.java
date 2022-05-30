@@ -3,6 +3,9 @@ package com.lowes.empapp;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import com.lowes.empapp.exception.EmployeeException;
+import com.lowes.empapp.service.EmployeeServiceImpl;
+
 public class EmployeeMain {
 
 	public static void main(String[] args) throws EmployeeException {
@@ -10,7 +13,7 @@ public class EmployeeMain {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Please enter your choice:");
 		int choice;
-		EmployeeService eService = new EmployeeService();
+		EmployeeServiceImpl eService = new EmployeeServiceImpl();
 
 		System.out.println(
 				"***Welcome to Employee Management Application*****" + "\n 1. Add Employee" + "\n 2. view Employee"
@@ -45,6 +48,7 @@ public class EmployeeMain {
 				case 6:
 					System.out.println("Thank you for using the application");
 					System.exit(0);
+					break;
 				default:
 					System.out.println("Please Enter Valid Input");
 					break;
@@ -54,7 +58,7 @@ public class EmployeeMain {
 		} catch (InputMismatchException e) {
 			e.printStackTrace();
 		} catch (EmployeeException e) {
-			throw new EmployeeException("Please check EmplyeeMain class for method call");
+			throw new EmployeeException("Please provide employee data");
 		}
 
 	}
