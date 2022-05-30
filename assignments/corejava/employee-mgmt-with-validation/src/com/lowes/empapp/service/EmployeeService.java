@@ -23,7 +23,6 @@ public interface EmployeeService {
 
 	public void bulkExport();
 
-	public boolean validate(Employee emp, String msg, Predicate<Employee> Condition,
-			Function<String, Boolean> operation);
+	public boolean validate(Employee emp,Predicate<Employee> Condition);
 
 }

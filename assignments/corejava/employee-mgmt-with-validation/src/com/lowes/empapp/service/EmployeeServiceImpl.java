@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -22,6 +24,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	HashMap<Integer, Employee> employee = new HashMap<Integer, Employee>();
 
 	Employee empObj;
+	
+
 
 	@Override
 	public boolean create(Employee emp) {
@@ -78,6 +82,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		try {
 			List<Employee> empList = getAll();
+			Collections.sort(empList, EMPLOYEE_SORT_BY_NAME);
 			if (!empList.isEmpty() && empList.size() > 0) {
 				printHeader();
 				for (Employee empListObj : empList) {
@@ -134,11 +139,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 			System.out.println("Please enter the employee Name");
 			String name = sc.next();
 			emp.setName(name);
-
+			
 			System.out.println("Please enter the Age");
 			int age = sc.nextInt();
 			emp.setAge(age);
-			//validate(emp, name, null, null)
+			// validate(emp, name, null, null)
 
 			System.out.println("Please enter the department");
 			String department = sc.next();
@@ -227,11 +232,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public boolean validate(Employee emp, String msg, Predicate<Employee> Condition,
-			Function<String, Boolean> operation) {
-		Predicate<Employee> p = empObj -> emp.getAge() > 18 && emp.getAge() <50;
-		p.test(empObj);
-		return true;
+	public boolean validate(Employee emp, Predicate<Employee> Condition) {
+		Predicate<Employee> p = empObj -> emp.getAge() > 18 && emp.getAge() < 50;
+		return p.test(empObj);
 	}
+
+	@SuppressWarnings("rawtypes")
+	Comparator EMPLOYEE_SORT_BY_NAME = new Comparator<Employee>() {
+		@Override
+		public int compare(Employee o1, Employee o2) {
+			if (o1 instanceof Employee && o2 instanceof Employee) {
+				return ((Employee) o1).getName().compareTo(((Employee) o2).getName());
+			}
+			return 0;
+		}
+	};
 
 }

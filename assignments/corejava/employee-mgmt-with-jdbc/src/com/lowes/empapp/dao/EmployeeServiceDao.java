@@ -22,7 +22,7 @@ public class EmployeeServiceDao implements EmployeeService {
 
 	Scanner in = new Scanner(System.in);
 	Connection jdbcCon = new JdbcConnection().getConnection();
-	
+
 	Statement stmt = null;
 	PreparedStatement pstmt = null;
 	ResultSet rs = null;
@@ -50,7 +50,7 @@ public class EmployeeServiceDao implements EmployeeService {
 			pstmt.close();
 			jdbcCon.commit();
 			System.out.println(insertCount + " Employee(s) inserted");
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -88,12 +88,11 @@ public class EmployeeServiceDao implements EmployeeService {
 		try {
 			System.out.println("Please enter the employee id to update ? ");
 			int id = in.nextInt();
-			
-			String updateQuery = "UPDATE employee SET name=?,age=?,designation=?,department?,country=? WHERE id=?";
-			
+
+			String updateQuery = "UPDATE employee SET name=?,age=?,designation=?,department=?,country=? WHERE id=?";
+
 			pstmt = jdbcCon.prepareStatement(updateQuery);
 			Employee empObj = readEmployeeData(emp);
-			//pstmt.setInt(1, id);
 			pstmt.setString(1, empObj.getName());
 			pstmt.setInt(2, empObj.getAge());
 			pstmt.setString(3, empObj.getDesignation());
@@ -101,8 +100,9 @@ public class EmployeeServiceDao implements EmployeeService {
 			pstmt.setString(5, empObj.getCountry());
 			pstmt.setInt(6, id);
 			pstmt.executeUpdate();
+			jdbcCon.commit();
 			pstmt.close();
-			System.out.println("\"An existing user was updated successfully!\")");		
+			System.out.println("\"An existing user was updated successfully!\")");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -112,15 +112,15 @@ public class EmployeeServiceDao implements EmployeeService {
 	@Override
 	public boolean delete(int empId) {
 		System.out.println("Please enter the employee id to delete ? ");
-		int id = in.nextInt();	
+		int id = in.nextInt();
 		try {
-			String deleteQuery = "DELETE FROM employee WHERE id = "+id;
+			String deleteQuery = "DELETE FROM employee WHERE id = " + id;
 			pstmt = jdbcCon.prepareStatement(deleteQuery);
 			int deleteCount = pstmt.executeUpdate();
 			pstmt.close();
 			System.out.println(deleteCount + " Employee(s) deleted");
 			jdbcCon.commit();
-		} catch (SQLException e) {			
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return true;
@@ -129,34 +129,55 @@ public class EmployeeServiceDao implements EmployeeService {
 
 	@Override
 	public Employee get(int empId) throws EmployeeException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+		System.out.println("Please enter the employee id to get Employee data ");
+		int id = in.nextInt();
+		String selectQueryForEmpId = "SELECT * FROM jdbctraining.employee WHERE id=" + id;
+		Employee emp = null;
+		try {
+
+			Statement stmt = jdbcCon.createStatement();
+			rs = stmt.executeQuery(selectQueryForEmpId);
+
+			while (rs.next()) {
+				// Retrieve by column name
+				id = rs.getInt("id");
+				int age = rs.getInt("age");
+				String name = rs.getString("name");
+				String designation = rs.getString("designation");
+				String department = rs.getString("department");
+				String country = rs.getString("country");
+				emp = new Employee(id, name, age, designation, department, country);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return emp;
+		}
 
 	@Override
 	public List<Employee> getAll() {
-		List<Employee> empList = new ArrayList<Employee>(); 
+		List<Employee> empList = new ArrayList<Employee>();
 		String selectQuery = "SELECT * FROM jdbctraining.employee";
 		try {
 			Statement stmt = jdbcCon.createStatement();
-		    rs = stmt.executeQuery(selectQuery);
-		while (rs.next()) {
-			// Retrieve by column name
-			int id = rs.getInt("id");
-			int age = rs.getInt("age");
-			String name = rs.getString("name");
-			String designation = rs.getString("designation");
-			String department = rs.getString("department");
-			String country = rs.getString("country");
-           empList.add(new Employee(id,name,age,designation,department,country));
-			
-		}
+			rs = stmt.executeQuery(selectQuery);
+			while (rs.next()) {
+				// Retrieve by column name
+				int id = rs.getInt("id");
+				int age = rs.getInt("age");
+				String name = rs.getString("name");
+				String designation = rs.getString("designation");
+				String department = rs.getString("department");
+				String country = rs.getString("country");
+				empList.add(new Employee(id, name, age, designation, department, country));
+
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return empList;
 	}
-	
+
 	public void viewAll() {
 
 		try {
@@ -196,25 +217,23 @@ public class EmployeeServiceDao implements EmployeeService {
 		}
 		try {
 			while ((line = reader.readLine()) != null) {
-				System.out.println("********read line");
 				String[] parts = line.split(",");
 				if (parts.length >= 0) {
-					System.out.println("********");
 					try {
-					stmt = jdbcCon.createStatement();
-					String insertQueryForPrepareStmt = "INSERT INTO employee (name, age, designation, department, country) VALUES (?, ?, ?, ?, ?)";
-					pstmt = jdbcCon.prepareStatement(insertQueryForPrepareStmt);
-					pstmt.setString(1, parts[0]);
-					pstmt.setInt(2, Integer.parseInt(parts[1]));
-					pstmt.setString(3, parts[2]);
-					pstmt.setString(4, parts[3]);
-					pstmt.setString(5, parts[4]);					
-					int insertCount = pstmt.executeUpdate();					
-					System.out.println(insertCount + " Employee(s) inserted");
-					}catch(Exception e) {
+						stmt = jdbcCon.createStatement();
+						String insertQueryForPrepareStmt = "INSERT INTO employee (name, age, designation, department, country) VALUES (?, ?, ?, ?, ?)";
+						pstmt = jdbcCon.prepareStatement(insertQueryForPrepareStmt);
+						pstmt.setString(1, parts[0]);
+						pstmt.setInt(2, Integer.parseInt(parts[1]));
+						pstmt.setString(3, parts[2]);
+						pstmt.setString(4, parts[3]);
+						pstmt.setString(5, parts[4]);
+						int insertCount = pstmt.executeUpdate();
+					    System.out.println(insertCount + " Employee(s) inserted");
+					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					
+
 				} else {
 					System.out.println("ignoring line: " + line);
 				}
@@ -222,15 +241,14 @@ public class EmployeeServiceDao implements EmployeeService {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			try {
-				
+
 				jdbcCon.commit();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+			} catch (SQLException e) {				
 				e.printStackTrace();
 			}
-			
+
 		}
 
 	}
@@ -249,10 +267,10 @@ public class EmployeeServiceDao implements EmployeeService {
 					writer.write(empListObj.getAge() + ",");
 					writer.write(empListObj.getDepartment() + ",");
 					writer.write(empListObj.getDesignation() + ",");
-					writer.write(empListObj.getCountry() + ",");
+					writer.write(empListObj.getCountry()+"");
 					writer.write("\n");
 				}
-				System.out.println("Bulk Import is success with the records size " + empList.size() + "!!!");
+				System.out.println("Bulk export is success with the records size " + empList.size() + "!!!");
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
@@ -265,10 +283,20 @@ public class EmployeeServiceDao implements EmployeeService {
 	}
 
 	public void viewData(int empId) {
-		// TODO Auto-generated method stub
-		
+		try {
+			Employee empObj = get(empId);
+			if (empObj != null) {
+				System.out
+						.println("\t" + empObj.getEmpId() + "\t" + empObj.getName() + "\t" + empObj.getAge() + "\t	"
+								+ empObj.getDepartment() + "\t" + empObj.getDesignation() + "\t" + empObj.getCountry());
+			} else {
+				System.out.println("There are no records to dispaly with the given employee id");
+			}
+
+		} catch (EmployeeException e) {
+			e.printStackTrace();
+		}
+
 	}
-	
 
 }
-

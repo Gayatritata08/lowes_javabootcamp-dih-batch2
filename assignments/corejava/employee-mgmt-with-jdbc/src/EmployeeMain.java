@@ -70,7 +70,7 @@ public class EmployeeMain {
 					Future<Boolean> future = service.submit(new Callable<Boolean>() {
 						@Override
 						public Boolean call() throws Exception {
-							Thread.sleep(1000);
+							Thread.sleep(3000);
 							 eService.bulkImport();
 							//future.get();
 							return true;
