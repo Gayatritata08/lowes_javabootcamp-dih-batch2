@@ -1,5 +1,7 @@
 package com.lowes.empapp.model;
 
+import java.time.LocalDateTime;
+
 public class Employee {
 
 	private int empId;
@@ -8,6 +10,10 @@ public class Employee {
 	private String designation;
 	private String department;
 	private String country;
+	
+	private LocalDateTime doj;
+	private LocalDateTime createdTime;
+	private LocalDateTime modifiedTime;
 
 	public Employee() {
 
@@ -68,6 +74,30 @@ public class Employee {
 
 	public void setDepartment(String department) {
 		this.department = department;
+	}
+	
+	public LocalDateTime getDoj() {
+		return doj;
+	}
+
+	public void setDoj(LocalDateTime doj) {
+		this.doj = doj;
+	}
+
+	public LocalDateTime getCreatedTime() {
+		return createdTime;
+	}
+
+	public void setCreatedTime(LocalDateTime createdTime) {
+		this.createdTime = createdTime;
+	}
+
+	public LocalDateTime getModifiedTime() {
+		return modifiedTime;
+	}
+
+	public void setModifiedTime(LocalDateTime modifiedTime) {
+		this.modifiedTime = modifiedTime;
 	}
 
 	@Override

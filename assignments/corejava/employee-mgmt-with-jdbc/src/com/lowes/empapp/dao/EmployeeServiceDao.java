@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -46,6 +47,9 @@ public class EmployeeServiceDao implements EmployeeService {
 			pstmt.setString(3, empObj.getDesignation());
 			pstmt.setString(4, empObj.getDepartment());
 			pstmt.setString(5, empObj.getCountry());
+		
+			
+			
 			int insertCount = pstmt.executeUpdate();
 			pstmt.close();
 			jdbcCon.commit();
@@ -79,6 +83,8 @@ public class EmployeeServiceDao implements EmployeeService {
 		System.out.println("Please enter the employee Country");
 		String country = in.next();
 		emp.setCountry(country);
+		
+	
 
 		return emp;
 	}
@@ -233,7 +239,9 @@ public class EmployeeServiceDao implements EmployeeService {
 				System.out.println(line+"***********");
 				
 				String[] parts = line.split(",");
-				System.out.println(line+"***********" + parts.length);
+				System.out.println(line.split(",").toString());
+				System.out.println(line.split(",").length);
+				
 				if (parts.length >= 0) {
 					try {
 //						stmt = jdbcCon.createStatement();

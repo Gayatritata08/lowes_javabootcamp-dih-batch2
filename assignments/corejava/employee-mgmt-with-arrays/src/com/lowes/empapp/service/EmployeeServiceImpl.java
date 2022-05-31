@@ -32,7 +32,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			System.out.println("Please enter employee department");
 			String empDept = sc.next();
 
-			emp[index] = new Employee(empId, empName, empAge, empDesig, empDept);
+			emp[index++] = new Employee(empId, empName, empAge, empDesig, empDept);
 			System.out.println("Inserted employee data successfully ");			
 			System.out.println(index);
 					
@@ -91,34 +91,34 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	public void deleteEmpData() {
 		System.out.println("Please enter the employee id which you want to delete : ");
+		boolean status = false;
+        int deletedIndex = 0;
 		try {
 			int empId = sc.nextInt();
 			System.out.println("Employee Data after delete the specified record :");
-			printHeader();
-			//int n = emp.length;
-			Employee[] tempEmp = new Employee[10];
-			int j = 0;
-			int index1=0;
-					
-					for (Employee empObj:emp) {
-						if (empObj != null && empObj.getEmpId() != empId) {
-						tempEmp[j] = empObj;
-						j++;
-						}					
-					}	
-					tempEmp[j++] =emp[index-1];
-				   
-				// Changing original array
-					for(Employee empObj:emp) {
-						empObj = tempEmp[index1];
-						index1++;
-					
-				}
-				for (Employee empObj:emp) {
-				System.out.println(
-						"\t      " + empObj.getEmpId() + "\t    " +empObj.getName() + "\t    " + empObj.getAge()
-								+ "\t      " + empObj.getDesignation() + "\t      " +empObj.getDepartment());
-			}
+			for (int i = 0; i < emp.length; i++) {
+	            if (emp[i] != null) {
+	                if (emp[i].getEmpId() == empId) {
+	                    emp[i] = null;
+	                    deletedIndex = i;
+	                    index--;
+	                    status = true;
+	                    break;
+	                }
+	            }
+	        } if (status) {  // shifting the elements upwards
+	            for (int i = deletedIndex; i < emp.length; i++) {
+	                if ((i + 1) >= emp.length) {  // when we get last element, make it null
+	                    emp[i] = null;
+	                    break;
+	                } else {
+	                    emp[i] = emp[i + 1];  // shift the element to upwaards
+	                }
+	            }
+	        } else {
+	            System.out.println("Employee was not found ");
+	        }
+			
 		} catch(Exception e) {
 			new EmployeeException("Please check delete method.");
 			e.printStackTrace();
