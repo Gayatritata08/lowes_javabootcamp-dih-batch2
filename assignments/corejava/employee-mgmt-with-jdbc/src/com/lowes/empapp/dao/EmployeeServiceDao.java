@@ -6,11 +6,15 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -31,8 +35,14 @@ public class EmployeeServiceDao implements EmployeeService {
 	List<Employee> empList = null;
 
 	@Override
-	public boolean create(Employee emp) {
-		Employee empObj = readEmployeeData(emp);
+	public boolean create(Employee emp) throws EmployeeException {
+		Employee empObj;
+		try {
+			empObj = readEmployeeData(emp);
+		} catch (EmployeeException e) {
+			e.printStackTrace();
+			throw new EmployeeException("Employee Create method has some issue");
+		}
 		insertEmployeeData(empObj);
 		return true;
 	}
@@ -40,16 +50,15 @@ public class EmployeeServiceDao implements EmployeeService {
 	private void insertEmployeeData(Employee empObj) {
 		try {
 			Statement stmt = jdbcCon.createStatement();
-			String insertQueryForPrepareStmt = "INSERT INTO employee (name, age, designation, department, country) VALUES (?, ?, ?, ?, ?)";
+			String insertQueryForPrepareStmt = "INSERT INTO employee (name, age, designation, department, country,doj,createdTime) VALUES (?, ?, ?, ?, ?,?,?)";
 			pstmt = jdbcCon.prepareStatement(insertQueryForPrepareStmt);
 			pstmt.setString(1, empObj.getName());
 			pstmt.setInt(2, empObj.getAge());
 			pstmt.setString(3, empObj.getDesignation());
 			pstmt.setString(4, empObj.getDepartment());
 			pstmt.setString(5, empObj.getCountry());
-		
-			
-			
+			pstmt.setDate(6, Date.valueOf(empObj.getDoj()));
+			pstmt.setTimestamp(7, Timestamp.valueOf(LocalDateTime.now()));
 			int insertCount = pstmt.executeUpdate();
 			pstmt.close();
 			jdbcCon.commit();
@@ -61,7 +70,7 @@ public class EmployeeServiceDao implements EmployeeService {
 
 	}
 
-	private Employee readEmployeeData(Employee emp) {
+	private Employee readEmployeeData(Employee emp) throws EmployeeException {
 		emp = new Employee();
 
 		System.out.println("Please enter the employee name");
@@ -83,19 +92,34 @@ public class EmployeeServiceDao implements EmployeeService {
 		System.out.println("Please enter the employee Country");
 		String country = in.next();
 		emp.setCountry(country);
-		
-	
+
+		System.out.println("Please enter the date of joing in dd/MM/yyy format");
+		String doj = in.next();
+		setDoj(emp, doj);
 
 		return emp;
 	}
 
+	private void setDoj(Employee emp, String doj) throws EmployeeException {
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.BASIC_ISO_DATE;
+			formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			LocalDate date = LocalDate.parse(doj, formatter);
+			System.out.println(date);
+			emp.setDoj(date);
+		} catch (Exception e) {
+			throw new EmployeeException("Please enter the doj in correct format");
+
+		}
+	}
+
 	@Override
-	public boolean update(Employee emp) {
+	public boolean update(Employee emp) throws EmployeeException {
 		try {
 			System.out.println("Please enter the employee id to update ? ");
 			int id = in.nextInt();
 
-			String updateQuery = "UPDATE employee SET name=?,age=?,designation=?,department=?,country=? WHERE id=?";
+			String updateQuery = "UPDATE employee SET name=?,age=?,designation=?,department=?,country=?,doj=?,modifiedTime=? WHERE id=?";
 
 			pstmt = jdbcCon.prepareStatement(updateQuery);
 			Employee empObj = readEmployeeData(emp);
@@ -104,13 +128,16 @@ public class EmployeeServiceDao implements EmployeeService {
 			pstmt.setString(3, empObj.getDesignation());
 			pstmt.setString(4, empObj.getDepartment());
 			pstmt.setString(5, empObj.getCountry());
-			pstmt.setInt(6, id);
+			pstmt.setDate(6, Date.valueOf(empObj.getDoj()));
+			pstmt.setTimestamp(7, Timestamp.valueOf(LocalDateTime.now()));
+			pstmt.setInt(8, id);
 			pstmt.executeUpdate();
 			jdbcCon.commit();
 			pstmt.close();
 			System.out.println("\"An existing user was updated successfully!\")");
 		} catch (SQLException e) {
 			e.printStackTrace();
+			throw new EmployeeException("employee update method has some issue");
 		}
 		return true;
 	}
@@ -152,13 +179,29 @@ public class EmployeeServiceDao implements EmployeeService {
 				String designation = rs.getString("designation");
 				String department = rs.getString("department");
 				String country = rs.getString("country");
-				emp = new Employee(id, name, age, designation, department, country);
+				LocalDate doj;
+				if (rs.getDate("doj") != null)
+					doj = rs.getDate("doj").toLocalDate();
+				else
+					doj = null;
+				LocalDateTime createdTime;
+				if (rs.getDate("createdTime") != null)
+					createdTime = rs.getTimestamp("createdTime").toLocalDateTime();
+				else
+					createdTime = null;
+				LocalDateTime modifiedTime;
+				if (rs.getDate("modifiedTime") != null)
+					modifiedTime = rs.getTimestamp("modifiedTime").toLocalDateTime();
+				else
+					modifiedTime = null;
+
+				emp = new Employee(id, name, age, designation, department, country, doj, createdTime, modifiedTime);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return emp;
-		}
+	}
 
 	@Override
 	public List<Employee> getAll() {
@@ -175,7 +218,24 @@ public class EmployeeServiceDao implements EmployeeService {
 				String designation = rs.getString("designation");
 				String department = rs.getString("department");
 				String country = rs.getString("country");
-				empList.add(new Employee(id, name, age, designation, department, country));
+				LocalDate doj;
+
+				if (rs.getDate("doj") != null)
+					doj = rs.getDate("doj").toLocalDate();
+				else
+					doj = null;
+				LocalDateTime createdTime;
+				if (rs.getDate("createdTime") != null)
+					createdTime = rs.getTimestamp("createdTime").toLocalDateTime();
+				else
+					createdTime = null;
+				LocalDateTime modifiedTime;
+				if (rs.getDate("modifiedTime") != null)
+					modifiedTime = rs.getTimestamp("modifiedTime").toLocalDateTime();
+				else
+					modifiedTime = null;
+				empList.add(
+						new Employee(id, name, age, designation, department, country, doj, createdTime, modifiedTime));
 
 			}
 		} catch (SQLException e) {
@@ -193,7 +253,9 @@ public class EmployeeServiceDao implements EmployeeService {
 				for (Employee empListObj : empList) {
 					System.out.println("\t" + empListObj.getEmpId() + "\t" + empListObj.getName() + "\t"
 							+ empListObj.getAge() + "\t	" + empListObj.getDepartment() + "\t"
-							+ empListObj.getDesignation() + "\t" + empListObj.getCountry());
+							+ empListObj.getDesignation() + "\t" + empListObj.getCountry() + empListObj.getDoj() + "\t"
+							+ empListObj.getCreatedTime() + "\t" + empListObj.getModifiedTime());
+
 				}
 			} else {
 				System.out.println("No records to display !!!");
@@ -207,7 +269,7 @@ public class EmployeeServiceDao implements EmployeeService {
 
 	private void printHeader() {
 		System.out.println("\t" + "Id" + "\t" + "Name" + "\t" + "Age" + "\t" + "Department" + "\t" + "Designation"
-				+ "\t" + "Country");
+				+ "\t" + "Country" + "\t" + "Doj" + "\t" + "CreatedTime" + "\t" + "ModifiedTime");
 	}
 
 	public void bulkImport() {
@@ -217,65 +279,33 @@ public class EmployeeServiceDao implements EmployeeService {
 		String line;
 		BufferedReader reader = null;
 		try {
-			stmt = jdbcCon.createStatement();
-		} catch (SQLException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-		String insertQueryForPrepareStmt = "INSERT INTO employee (name, age, designation, department, country) VALUES (?, ?, ?, ?, ?)";
-		try {
 			reader = new BufferedReader(new FileReader(filePath));
-			try {
-				System.out.println(reader.readLine());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		}
 		try {
 			while ((line = reader.readLine()) != null) {
-				System.out.println(line+"***********");
-				
 				String[] parts = line.split(",");
-				System.out.println(line.split(",").toString());
-				System.out.println(line.split(",").length);
-				
 				if (parts.length >= 0) {
-					try {
-//						stmt = jdbcCon.createStatement();
-//						String insertQueryForPrepareStmt = "INSERT INTO employee (name, age, designation, department, country) VALUES (?, ?, ?, ?, ?)";
-						pstmt = jdbcCon.prepareStatement(insertQueryForPrepareStmt);
-						pstmt.setString(1, parts[0]);
-						pstmt.setInt(2, Integer.parseInt(parts[1]));
-						pstmt.setString(3, parts[2]);
-						pstmt.setString(4, parts[3]);
-						pstmt.setString(5, parts[4]);
-						int insertCount = pstmt.executeUpdate();
-					    System.out.println(insertCount + " Employee(s) inserted");
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
+					emp = new Employee();
+					emp.setName(parts[0]);
+					emp.setAge(Integer.parseInt(parts[1]));
+					emp.setDepartment(parts[2]);
+					emp.setDesignation(parts[3]);
+					emp.setCountry(parts[4]);
+					emp.setDoj(LocalDate.parse(parts[5], DateTimeFormatter.ofPattern("dd/MM/yyy")));
+					emp.setCreatedTime(LocalDateTime.now());
+					insertEmployeeData(emp);
 				} else {
 					System.out.println("ignoring line: " + line);
 				}
-				System.out.println("Bulk Import is success with the records size " + empList.size() + "!!!");
+				System.out.println("import is success");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			try {
-
-				jdbcCon.commit();
-			} catch (SQLException e) {				
-				e.printStackTrace();
-			}
-
 		}
-	}
 
+	}
 
 	@Override
 	public void bulkExport() {
@@ -291,7 +321,10 @@ public class EmployeeServiceDao implements EmployeeService {
 					writer.write(empListObj.getAge() + ",");
 					writer.write(empListObj.getDepartment() + ",");
 					writer.write(empListObj.getDesignation() + ",");
-					writer.write(empListObj.getCountry()+"");
+					writer.write(empListObj.getDoj() + ",");
+					writer.write(empListObj.getCreatedTime() + ",");
+					writer.write(empListObj.getModifiedTime() + "");
+
 					writer.write("\n");
 				}
 				System.out.println("Bulk export is success with the records size " + empList.size() + "!!!");
@@ -310,9 +343,11 @@ public class EmployeeServiceDao implements EmployeeService {
 		try {
 			Employee empObj = get(empId);
 			if (empObj != null) {
-				System.out
-						.println("\t" + empObj.getEmpId() + "\t" + empObj.getName() + "\t" + empObj.getAge() + "\t	"
-								+ empObj.getDepartment() + "\t" + empObj.getDesignation() + "\t" + empObj.getCountry());
+				printHeader();
+				System.out.println("\t" + empObj.getEmpId() + "\t" + empObj.getName() + "\t"
+						+ empObj.getAge() + "\t	" + empObj.getDepartment() + "\t"
+						+ empObj.getDesignation() + "\t" + empObj.getCountry() + empObj.getDoj() + "\t"
+						+ empObj.getCreatedTime() + "\t" + empObj.getModifiedTime());
 			} else {
 				System.out.println("There are no records to dispaly with the given employee id");
 			}

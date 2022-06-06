@@ -14,12 +14,12 @@ public class EmployeeServiceImpl {
 	Employee empObj;
 	EmployeeServiceDao empDao = new EmployeeServiceDao();
 
-	public boolean create(Employee emp) {
+	public boolean create(Employee emp) throws EmployeeException {
 		empDao.create(emp);
 		return true;
 	}
 
-	public boolean update(Employee emp) {
+	public boolean update(Employee emp) throws EmployeeException {
 		empDao.update(emp);
 		return true;
 	}

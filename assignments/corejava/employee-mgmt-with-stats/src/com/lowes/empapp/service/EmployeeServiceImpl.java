@@ -255,7 +255,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	};
 
 	public void printStatistics() {
-		List<Employee> empList = getAll();
+		//List<Employee> empList = getAll();
 
 		long n = getEmployeeCountAgeGreaterThan(empObj -> empObj.getAge() > 10);
 		System.out.println("Employees Age greater than 50 count " + n);

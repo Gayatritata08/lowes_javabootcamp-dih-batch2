@@ -1,4 +1,4 @@
-package com.lowes.empapp.model;
+package com.assignment.empapp.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,8 +10,7 @@ public class Employee {
 	private int age;
 	private String designation;
 	private String department;
-	private String country;
-	
+	private String country;	
 	private LocalDate doj;
 	private LocalDateTime createdTime;
 	private LocalDateTime modifiedTime;
