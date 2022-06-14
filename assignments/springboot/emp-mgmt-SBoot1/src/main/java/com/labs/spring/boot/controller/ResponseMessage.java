@@ -1,5 +1,6 @@
 package com.labs.spring.boot.controller;
 
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -7,9 +8,9 @@ public class ResponseMessage {
 
 	String status;
 	String message;
-
+	
 	public ResponseMessage() {
-
+		
 	}
 
 	public ResponseMessage(String status, String message) {

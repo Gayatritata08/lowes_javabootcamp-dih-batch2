@@ -10,10 +10,10 @@ public interface EmployeeService {
 
 	public List<Employee> list() throws EmployeeException;
 
-	public Employee get(int id);
+	public Employee get(int id) throws EmployeeException;
 
-	public Employee update(int id, Employee employee);
+	public Employee update(int id, Employee employee) throws EmployeeException;
 
-	public void delete(int id);
+	public void delete(int id) throws EmployeeException;
 
 }
