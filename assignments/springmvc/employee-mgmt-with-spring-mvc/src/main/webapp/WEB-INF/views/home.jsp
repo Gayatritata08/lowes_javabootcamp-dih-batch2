@@ -10,5 +10,6 @@
 	<h1>Welcome to Employee Management App!</h1>
 	<p> Current Time: ${serverTime} </p>
 	<p> <a href="${contextPath}/login">Login</a>
+	<p> <a href="${contextPath}/register">Register</a>
 </body>
 </html>

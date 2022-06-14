@@ -11,7 +11,6 @@
 .error {
 	color: #ff0000;
 }
-
 .errorblock {
 	color: #000;
 	background-color: #ffEEEE;
@@ -29,8 +28,9 @@
 </c:if>
 
 <body>
-	<span>Welcome <strong> <c:out value="${userName}" /> </strong></span>
-	
+	<span>Welcome <strong> <c:out value="${userName}" />
+	</strong></span>
+
 	<h2>Add Employee</h2>
 	<form:form method="POST" action="employee" modelAttribute="employee">
 		<form:errors path="*" cssClass="errorblock" element="div" />
@@ -45,27 +45,6 @@
 				<td><form:input path="age" /> <form:errors path="age"
 						cssClass="error" /></td>
 			</tr>
-			<%-- 			<tr>
-				<td>Gender:</td>
-				<td><form:radiobutton path="gender" value="M" /> Male &nbsp; <form:radiobutton
-						path="gender" value="F" /> Female</td>
-			</tr> --%>
-
-			<tr>
-				<td>Gender:</td>
-				<td><form:radiobuttons path="gender" items="${genderOptions}" />
-					&nbsp; <form:errors path="gender" cssClass="error" /></td>
-			</tr>
-
-			<tr>
-				<td>Contractor:</td>
-				<td><form:checkbox path="contractor" /></td>
-			</tr>
-
-			<tr>
-				<td>Skills:</td>
-				<td><form:checkboxes path="skills" items="${skillList}" /></td>
-			</tr>
 
 			<tr>
 				<td><form:label path="designation">Designation:</form:label></td>
@@ -75,10 +54,7 @@
 				<td><form:label path="department">Department:</form:label></td>
 				<td><form:input path="department" /></td>
 			</tr>
-			<tr>
-				<td><form:label path="address">Address:</form:label></td>
-				<td><form:textarea cols="20" rows="3" path="address" /></td>
-			</tr>
+
 			<tr>
 				<td><form:label path="country">Country:</form:label></td>
 				<td><form:select path="country" items="${countries}" /></td>

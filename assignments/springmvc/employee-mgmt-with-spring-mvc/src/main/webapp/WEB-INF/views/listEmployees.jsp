@@ -22,12 +22,8 @@
 		<tr>
 			<th>Name</th>
 			<th>Age</th>
-			<th>Gender</th>
-			<th>Contractor</th>
-			<th>Skills</th>
 			<th>Designation</th>
 			<th>Department</th>
-			<th>Address</th>
 			<th>Country</th>
 			<th>Edit</th>
 			<th>Delete</th>
@@ -43,12 +39,8 @@
 			<tr>
 				<td>${emp.name}</td>
 				<td>${emp.age}</td>
-				<td>${emp.gender}</td>
-				<td>${emp.contractor ? "Yes" : "No"}</td>
-				<td>${emp.skills}</td>
 				<td>${emp.designation}</td>
 				<td>${emp.department}</td>
-				<td>${emp.address}</td>
 				<td>${emp.country}</td>
 				<td><a href="${contextPath}/employee/update/${emp.id}">Edit</a></td>
 				<td><a href="${contextPath}/employee/delete/${emp.id}">Delete</a></td>

@@ -1,0 +1,17 @@
+package com.labs.spring.boot.exception;
+
+public class EmployeeException extends Exception {
+
+	public EmployeeException() {
+		super();
+	}
+
+	public EmployeeException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public EmployeeException(String message) {
+		super(message);
+	}
+
+}

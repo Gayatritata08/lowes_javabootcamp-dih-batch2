@@ -11,7 +11,6 @@
 .error {
 	color: #ff0000;
 }
-
 .errorblock {
 	color: #000;
 	background-color: #ffEEEE;
@@ -50,31 +49,17 @@
 				<td>Age :</td>
 				<td><form:input path="age" /></td>
 			</tr>
-			<tr>
-				<td>Gender:</td>
-				<td><form:radiobutton path="gender" value="M" /> Male &nbsp; <form:radiobutton
-						path="gender" value="F" /> Female</td>
-			</tr>
-			<tr>
-				<td>Contractor:</td>
-				<td><form:checkbox path="contractor" /></td>
-			</tr>
+			
 			<tr>
 				<td>Designation :</td>
 				<td><form:input path="designation" /></td>
 			</tr>
-			<tr>
-				<td>Skills:</td>
-				<td><form:checkboxes path="skills" items="${skillList}" /></td>
-			</tr>
+			
 			<tr>
 				<td>Department :</td>
 				<td><form:input path="department" /></td>
 			</tr>
-			<tr>
-				<td><form:label path="address">Address:</form:label></td>
-				<td><form:textarea cols="20" rows="3" path="address" /></td>
-			</tr>
+			
 			<tr>
 				<td><form:label path="country">Country:</form:label></td>
 				<td><form:select path="country" items="${countries}" /></td>

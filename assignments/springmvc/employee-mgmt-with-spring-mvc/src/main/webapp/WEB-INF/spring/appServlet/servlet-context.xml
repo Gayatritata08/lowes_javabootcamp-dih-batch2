@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+<beans:beans
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -13,11 +15,13 @@
 	<mvc:annotation-driven />
 
 	<!-- Enables component scanning on the given and it's child packages -->
-	<context:component-scan base-package="com.assignmenets.empapp" />
+	<context:component-scan
+		base-package="com.assignments.empapp" />
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
 		up static resources in the ${webappRoot}/resources directory -->
-	<mvc:resources mapping="/resources/**" location="/resources/" />
+	<mvc:resources mapping="/resources/**"
+		location="/resources/" />
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
 		in the /WEB-INF/views directory -->
@@ -29,27 +33,58 @@
 
 	<!-- Custom interceptor to configure session timeout interval -->
 	<mvc:interceptors>
-		<beans:bean class="com.assignmenets.empapp.interceptor.SessionHandler" />
+		<beans:bean
+			class="com.assignments.empapp.interceptor.SessionHandler" />
 	</mvc:interceptors>
 
 	<!-- EmployeeService bean definition -->
-	<beans:bean id="employeeService"
-		class="com.assignmenets.empapp.service.EmployeeService" />
+<!-- 	<beans:bean id="employeeServiceCol"
+		class="com.lowes.empapp.service.EmployeeServiceColImpl" /> -->
 
 	<!-- Exception handler mapping -->
 	<beans:bean
 		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
 		<beans:property name="exceptionMappings">
 			<beans:props>
-				<beans:prop key="com.assignmenets.empapp.exception.LoginException">
+				<beans:prop
+					key="com.assignments.empapp.exception.LoginException">
 					loginError
-				</beans:prop>			
-				<beans:prop key="com.assignmenets.empapp.exception.SpringException">
+				</beans:prop>
+				<beans:prop
+					key="com.assignments.empapp.exception.SpringException">
 					error
 				</beans:prop>
 			</beans:props>
 		</beans:property>
 		<beans:property name="defaultErrorView" value="error" />
 	</beans:bean>
+
+	<beans:bean id="employeeService"
+		class="com.assignments.empapp.service.EmployeeServiceImpl" />
+	<beans:bean id="employeeDao"
+		class="com.assignments.empapp.dao.EmployeeDaoImpl">	
+		
+	</beans:bean>
+
+	<beans:bean id="userService"
+		class="com.assignments.empapp.service.UserServiceImpl" />
+	<beans:bean id="userDao"
+		class="com.assignments.empapp.dao.UserDaoImpl" />
+
+	<beans:bean id="jdbcTemplate"
+		class="org.springframework.jdbc.core.JdbcTemplate">
+		<beans:property name="dataSource" ref="dataSource" />
+	</beans:bean>
+
+	<beans:bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<beans:property name="driverClassName"
+			value="com.mysql.jdbc.Driver" />
+		<beans:property name="url"
+			value="jdbc:mysql://localhost:3306/jdbctraining" />
+		<beans:property name="username" value="training" />
+		<beans:property name="password" value="training" />
+	</beans:bean>
+
 
 </beans:beans>

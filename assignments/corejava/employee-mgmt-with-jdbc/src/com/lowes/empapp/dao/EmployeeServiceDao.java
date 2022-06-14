@@ -93,7 +93,7 @@ public class EmployeeServiceDao implements EmployeeService {
 		String country = in.next();
 		emp.setCountry(country);
 
-		System.out.println("Please enter the date of joing in dd/MM/yyy format");
+		System.out.println("Please enter the date of joing in dd/MM/yyyy format");
 		String doj = in.next();
 		setDoj(emp, doj);
 
